@@ -5,7 +5,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 
 @Component
-class MailConsumer {
+class DeleteEmailConsumer {
 
     @RabbitListener(queues = ["\${broker.queue.delete.email.name}"])
     fun listenDeleteQueue(payload: DeleteUserMessageDto) {
