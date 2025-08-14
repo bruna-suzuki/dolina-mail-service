@@ -1,6 +1,6 @@
 package com.dolina_mail_service.dtos
 
-data class RequestEmailPurchase(
+data class RequestEmailPurchaseDto(
     val userEmail: String,
     val userName: String,
     val itemName: String,
