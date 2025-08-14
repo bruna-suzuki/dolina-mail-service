@@ -1,8 +1,11 @@
 package com.dolina_mail_service.models
 
+import com.dolina_mail_service.enums.StatusEmail
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
@@ -12,11 +15,16 @@ data class EmailModel(
     @Id
     val id: UUID = UUID.randomUUID(),
 
-    val userEmail: String,
+    val emailFrom: String,
 
-    val userName: String,
+    val emailTo: String,
 
-    val itemName: String,
+    val subject: String,
 
-    val address: String
+    @Column(columnDefinition = "TEXT")
+    val text: String,
+
+    val sendDateEmail: LocalDateTime,
+
+    var statusEmail: StatusEmail
 )
