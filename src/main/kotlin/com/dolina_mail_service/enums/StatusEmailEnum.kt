@@ -1,6 +1,6 @@
 package com.dolina_mail_service.enums
 
-enum class StatusEmail {
+enum class StatusEmailEnum {
     SENT,
     ERROR
 }
