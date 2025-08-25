@@ -1,7 +1,7 @@
 package com.dolina_mail_service.services
 
 import com.dolina_mail_service.dtos.RequestEmailPurchaseDto
-import com.dolina_mail_service.enums.StatusEmail
+import com.dolina_mail_service.enums.StatusEmailEnum
 import com.dolina_mail_service.models.EmailModel
 import com.dolina_mail_service.repositories.EmailRepository
 import jakarta.transaction.Transactional
@@ -25,7 +25,7 @@ class EmailService(
             emailFrom = emailFrom,
             emailTo = payload.userEmail,
             subject = "Confirmação do seu pedido!",
-            text = "Caro ${payload.userName}, já estamos processando o seu pedido, e em breve, você irá receber muito c###." +
+            text = "Caro ${payload.userName}, já estamos processando o seu pedido. Em breve, chegará no seu endereço." +
                     "\n" +
                     "\n" +
                     "Resumo da compra:" +
@@ -39,28 +39,27 @@ class EmailService(
                     "Obrigado por comprar com a gente!" +
                     "\n" +
                     "\n" +
-                    "Equipe Dolina" +
-                    "\n" +
-                    "\n" +
-                    "PS: Esse dia parece que não acaba, estou com muito chocolate dourado, meu pacotinho perfeito." +
-                    "\n" +
-                    "Tamo junto, mAnO",
+                    "Equipe Dolina",
             sendDateEmail = LocalDateTime.now(),
-            statusEmail = StatusEmail.SENT
+            statusEmail = StatusEmailEnum.SENT
         )
-        try {
-            val message = SimpleMailMessage().apply {   //apply
+        runCatching {
+            SimpleMailMessage().apply {   /////ESTUDAR
                 setTo(emailModel.emailTo)
                 from = emailModel.emailFrom
                 subject = emailModel.subject
                 text = emailModel.text
+            }.also { emailSender.send(it)
+                emailModel.statusEmail = StatusEmailEnum.SENT ///ADICIONADO
             }
-            emailSender.send(message)
 
-        } catch (e: Exception) {
-            emailModel.statusEmail = StatusEmail.ERROR
-        } finally {
+        }.onFailure {
+            emailModel.statusEmail = StatusEmailEnum.ERROR
+        }.also {
             emailRepository.save(emailModel)
         }
     }
+
+    fun getAllEmail(): MutableList<EmailModel> =
+        emailRepository.findAll()
 }
